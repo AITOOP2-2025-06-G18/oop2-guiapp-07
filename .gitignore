@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Output images
+output_images/k24044/
+
 # C extensions
 *.so
 
