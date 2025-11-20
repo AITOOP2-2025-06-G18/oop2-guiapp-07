@@ -20,7 +20,7 @@ class Lecture05GUI(QMainWindow):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("画像加工アプリケーション (Qキーで写真撮影)")
+        self.setWindowTitle("画像加工アプリケーション")
         self.setGeometry(100, 100, 1200, 800)
         
         # キーイベントを受け取るためにフォーカスポリシーを設定
@@ -47,13 +47,6 @@ class Lecture05GUI(QMainWindow):
         self.camera_label.setText("カメラを初期化中...")
         self.camera_label.setMinimumHeight(400)
         main_layout.addWidget(self.camera_label)
-        
-        # 加工済み画像表示用のQLabel
-        self.processed_label = QLabel()
-        self.processed_label.setAlignment(Qt.AlignCenter)
-        self.processed_label.setText("Qキーで写真を撮影してください")
-        self.processed_label.setMinimumHeight(400)
-        main_layout.addWidget(self.processed_label)
         
         # タイマーを設定して定期的にフレームを更新
         self.timer = QTimer()
@@ -120,6 +113,12 @@ class Lecture05GUI(QMainWindow):
         self.captured_img = self.current_frame.copy()
         self.video_capture.captured_img = self.captured_img
         
+        # 撮影した画像をoutput_images/k24044に保存
+        output_dir = project_root / 'output_images' / 'k24044'
+        output_dir.mkdir(parents=True, exist_ok=True)
+        capture_filepath = str(output_dir / 'camera_capture.png')
+        cv2.imwrite(capture_filepath, self.captured_img)
+        
         # 自動的に画像を加工
         self.process_image()
     
@@ -156,31 +155,31 @@ class Lecture05GUI(QMainWindow):
         self.processed_img = google_img.copy()
         
         # 加工済み画像を表示
-        self.display_processed_image(google_img)
+        # self.display_processed_image(google_img)
         
         # 自動的に保存
         self.save_image()
     
-    def display_processed_image(self, img: np.ndarray):
-        """加工済み画像を表示"""
-        # OpenCVのBGR画像をRGBに変換
-        rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # def display_processed_image(self, img: np.ndarray):
+    #     """加工済み画像を表示"""
+    #     # OpenCVのBGR画像をRGBに変換
+    #     rgb_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
-        # NumPy配列をQImageに変換
-        h, w, ch = rgb_image.shape
-        bytes_per_line = ch * w
-        qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+    #     # NumPy配列をQImageに変換
+    #     h, w, ch = rgb_image.shape
+    #     bytes_per_line = ch * w
+    #     qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         
-        # QPixmapに変換してQLabelに表示
-        pixmap = QPixmap.fromImage(qt_image)
+    #     # QPixmapに変換してQLabelに表示
+    #     pixmap = QPixmap.fromImage(qt_image)
         
-        # ラベルのサイズに合わせてスケール
-        scaled_pixmap = pixmap.scaled(
-            self.processed_label.size(),
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation
-        )
-        self.processed_label.setPixmap(scaled_pixmap)
+    #     # ラベルのサイズに合わせてスケール
+    #     scaled_pixmap = pixmap.scaled(
+    #         self.processed_label.size(),
+    #         Qt.KeepAspectRatio,
+    #         Qt.SmoothTransformation
+    #     )
+    #     self.processed_label.setPixmap(scaled_pixmap)
     
     def save_image(self):
         """加工済み画像を保存"""
