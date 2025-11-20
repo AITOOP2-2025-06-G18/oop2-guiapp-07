@@ -5,6 +5,7 @@ __pycache__/
 
 # Output images
 output_images/k24044/
+!output_images/k24044/.gitkeep
 
 # C extensions
 *.so
